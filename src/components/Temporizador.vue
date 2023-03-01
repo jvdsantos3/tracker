@@ -2,7 +2,10 @@
   <div class="is-flex is-align-items-center is-justify-content-space-between">
     <Cronometro :tempoEmSegundos="tempoEmSegundos" />
 
-    <button class="button" @click="iniciar" :disabled="cronometoRodando">
+    <BotaoFormulario :desabilitado="cronometoRodando" icone="fas fa-play" text="play" @aoClicar="iniciar" />
+    <BotaoFormulario :desabilitado="!cronometoRodando" icone="fas fa-stop" text="stop" @aoClicar="finalizar" />
+
+    <!-- <button class="button" @click="iniciar" :disabled="cronometoRodando">
       <span class="icon">
         <i class="fas fa-play"></i>
       </span>
@@ -13,20 +16,24 @@
         <i class="fas fa-stop"></i>
       </span>
       <span>stop</span>
-    </button>
+    </button> -->
   </div>
 </template>
 
 <script lang="ts">
 
 import { defineComponent } from 'vue'
+import BotaoFormulario from './BotaoFormulario.vue';
 import Cronometro from './Cronometro.vue'
 
 export default defineComponent({
   name: 'TemporizadorTarefa',
 
+  emits: ['aoTemporizadorFinalizado'],
+
   components: {
     Cronometro,
+    BotaoFormulario,
   },
 
   data() {
@@ -50,6 +57,9 @@ export default defineComponent({
       clearInterval(this.cronometro);
 
       this.cronometoRodando = false
+
+      this.$emit('aoTemporizadorFinalizado', this.tempoEmSegundos)
+      this.tempoEmSegundos = 0
     }
   },
 })
